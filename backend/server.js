@@ -21,5 +21,8 @@ db.once('open', () => console.log("Connected to MongoDB"));
 const itemRoutes = require('./routes/itemRoutes');
 app.use('/api/items', itemRoutes);
 
-app.listen(port, () => console.log(`Server running on port ${port}`));
+app.get('/api/hello', (req,res)=>{
+  res.status(200).send("Hello from server")
+});
 
+app.listen(port, () => console.log(`Server running on port ${port}`));
