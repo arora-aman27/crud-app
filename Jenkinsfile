@@ -10,14 +10,24 @@ pipeline {
         PROJECT_KEY = 'crud-app'
         DOCKER_IMAGE = "${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}"
         KUBE_CONFIG = credentials('eks-kubeconfig)')
-
-    }
-
-    options {
-        timestamps()
+        CLUSTER_NAME   = 'crud-eks-cluster'
     }
 
     stages {
+        stage('Provision EKS using Terraform') {
+            steps {
+                dir('terraform-eks') {
+                    withAWS(region: "${AWS_REGION}", credentials: 'aws-jenkins-credentials-id') {
+                        sh '''
+                            terraform init
+                            terraform apply -auto-approve
+                            aws eks --region ${AWS_REGION} update-kubeconfig --name ${CLUSTER_NAME}
+                        '''
+                    }
+                }
+            }
+        }
+
         stage('Checkout') {
             steps {
                 git 'https://github.com/arora-aman27/crud-app.git'
@@ -72,17 +82,16 @@ pipeline {
         stage('Deploy to EKS using Helm') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'eks-kubeconfig', variable: 'KUBECONFIG')]) {
                         sh '''
-                            export KUBECONFIG=$KUBECONFIG
                             helm upgrade --install crud-app ./helm-chart \
                             --set image.repository=${ECR_REGISTRY}/${ECR_REPO} \
                             --set image.tag=${IMAGE_TAG} \
                             --namespace default
                             '''
+                        }
+                    }
+                }
             }
-        }
-    }
 
     post {
         success {
