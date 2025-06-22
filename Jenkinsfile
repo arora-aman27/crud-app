@@ -9,7 +9,7 @@ pipeline {
         SONARQUBE_SERVER = 'SonarQubeServer'
         PROJECT_KEY = 'crud-app'
         DOCKER_IMAGE = "${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}"
-        KUBE_CONFIG = credentials('eks-kubeconfig)')
+        KUBE_CONFIG = credentials('eks-kubeconfig')
         CLUSTER_NAME   = 'crud-eks-cluster'
     }
 
