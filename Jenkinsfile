@@ -1,7 +1,7 @@
 pipeline {
     agent any
 
-    envionment {
+    environment {
         AWS_REGION = 'ap-south-1'
         ECR_REPO = 'crud-app'
         ECR_REGISTRY = '094417668047.dkr.ecr.ap-south-1.amazonaws.com/crud-app'
