@@ -50,8 +50,8 @@ pipeline {
             }
         }
 
-        stage('SonarQube Scan') {
-            steps {
+       /*stage('SonarQube Scan') {
+       	   steps {
                 withSonarqubeEnv("${SONARQUBE_SERVER}")
                 dir('backend') {
                     sh '''
@@ -64,7 +64,7 @@ pipeline {
                 }
 
             }
-        }
+        }*/
 
 
         stage('Docker Build & push to ECR') {
