@@ -18,8 +18,7 @@ pipeline {
             steps {
                 withAWS(region: "${AWS_REGION}", credentials: 'aws-jenkins-credentials-id') {
                     script{
-                        def bucket = 'crud-app-bucket'
-                        def region = "${AWS_REGION}"
+                        def bucket = 'crud-app-bucket-2312'
                         
                         // Check if bucket exists
                         def result = sh(script: "aws s3api head-bucket --bucket ${bucket}", returnStatus: true)
@@ -38,7 +37,7 @@ pipeline {
                         }
                     }
                 }  
-                      
+
         stage('Provision EKS using Terraform') {
             steps {
                 dir('terraform-eks') {
