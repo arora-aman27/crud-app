@@ -19,7 +19,9 @@ pipeline {
                 dir('terraform-eks') {
                     withAWS(region: "${AWS_REGION}", credentials: 'aws-jenkins-credentials-id') {
                         sh '''
+                            aws sts get-caller-identity
                             terraform init
+                            terraform validate
                             terraform apply -auto-approve
                             aws eks --region ${AWS_REGION} update-kubeconfig --name ${CLUSTER_NAME}
                         '''
