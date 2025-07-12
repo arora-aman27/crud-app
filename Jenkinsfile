@@ -26,7 +26,7 @@ pipeline {
                         if (result !=0) {
                             echo "Bucket '${bucket}' does not exist or is inaccessible. Creating it..."
                             sh """
-                                aws s3 mb s3://"${bucket}"--region "${AWS_REGION}"
+                                aws s3 mb s3://"${bucket}" --region "${AWS_REGION}"
                                 """                       
                             }  else {
                                 echo "Bucket '${bucket}' already exists."
