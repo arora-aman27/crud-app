@@ -14,6 +14,31 @@ pipeline {
     }
 
     stages {
+        stage('Check or Create S3 Bucket') {
+            steps {
+                withAWS(region: "${AWS_REGION}", credentials: 'aws-jenkins-credentials-id') {
+                    script{
+                        def bucket = 'crud-app-bucket'
+                        def region = "${AWS_REGION}"
+                        
+                        // Check if bucket exists
+                        def result = sh(script: "aws s3api head-bucket --bucket ${bucket}", returnStatus: true)
+
+                        if (result !=0) {
+                            echo "Bucket '${bucket}' does not exist or is inaccessible. Creating it..."
+                            sh """
+                                aws s3api create-bucket --bucket ${bucket} \
+                                --region ${region} \
+                                --create-bucket-configuration LocationConstraint=${region}
+                                """                       
+                            }  else {
+                                echo "Bucket '${bucket}' already exists."
+                                }  
+                            }
+                        }
+                    }
+                }  
+                      
         stage('Provision EKS using Terraform') {
             steps {
                 dir('terraform-eks') {
